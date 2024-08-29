@@ -6,6 +6,9 @@ import ProductOverview from "@/components/ProductOverview";
 import ProductShowcase from "@/components/ProductShowcase";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials"
+import CallToAction from "@/components/CallToAction"
+import FAQ from "@/components/FAQ"
+import Footer from "@/components/Footer"
 
 const HomePage: React.FC = () => {
   return (
@@ -15,9 +18,9 @@ const HomePage: React.FC = () => {
       <ProductShowcase />
       <HowItWorks />
       <Testimonials />
-      {/* <CallToAction /> */}
-      {/* <FAQ /> */}
-      {/* <Footer /> */}
+      <CallToAction />
+      <FAQ />
+      <Footer />
     </>
   );
 };

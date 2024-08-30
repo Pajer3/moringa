@@ -1,17 +1,59 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FiUser, FiShoppingBag, FiHeart, FiSettings, FiHelpCircle } from 'react-icons/fi';
 
 const Account: React.FC = () => {
-  // Placeholder user data; this would typically be fetched from an API
-  const user = {
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    profilePicture: "/images/user-profile.jpg", // Replace with actual user profile picture path
-  };
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/user', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load user data');
+        }
+
+        const userData = await response.json();
+        setUser(userData);
+      } catch (error) {
+        setError('Failed to load user data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!user) {
+    return null; // This should never happen because the user is redirected if not logged in
+  }
 
   return (
     <section className="py-16 bg-gray-100 text-gray-800">
@@ -28,7 +70,7 @@ const Account: React.FC = () => {
             {/* Profile Picture */}
             <div className="w-24 h-24 rounded-full overflow-hidden">
               <Image
-                src={user.profilePicture}
+                src={user.profilePicture || '/images/default-profile.jpg'}
                 alt="User Profile"
                 width={96}
                 height={96}
